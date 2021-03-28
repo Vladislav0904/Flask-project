@@ -5,11 +5,11 @@
     {% for item in estates%}
     <div class="col-sm-2">
         <div class="card" style="width: 18rem;">
-            <img class="card-img-top" src={{item.image_link}} alt="Сарай">
+            <img class="card-img-top" src={{item.image_link}}>
             <div class="card-body">
                 <h5 class="card-title">{{item.name}}</h5>
                 <p class="card-text">{{item.about}}</p>
-                <a href="index" class="btn btn-dark">Купить</a>
+                <a href="building/{{item.id}}" type="button" class="btn btn-outline-dark">Купить</a>
             </div>
         </div>
     </div>

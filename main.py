@@ -19,6 +19,13 @@ def catalog():
     return render_template('catalog.html', title='Каталог', estates=estates)
 
 
+@app.route('/building/<int:id>')
+def building(id):
+    db_sess = db_session.create_session()
+    building = db_sess.query(Item).get(id)
+    return render_template('building.html', building=building)
+
+
 def main():
     db_session.global_init("db/estate.db")
     # db_sess = db_session.create_session()
