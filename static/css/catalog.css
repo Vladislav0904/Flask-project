@@ -21,8 +21,28 @@
     border-color: black; /*set the color you want here*/
 }
 
-.btn-outline-dark:hover, .btn-outline-dark:focus, .btn-outline-dark:active, .btn-outline-dark.active, .open>.dropdown-toggle.btn-outline-dark {
+.btn-outline-dark:hover, .btn-outline-dark:focus, .btn-outline-dark:active, .btn-outline-dark.active, .open > .dropdown-toggle.btn-outline-dark {
     color: black;
     background-color: white;
     border-color: black; /*set the color you want here*/
+}
+
+h1, h2{
+    margin-left: 50px;
+}
+
+.d-block {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    max-width: 800px;
+    max-height: 600px;
+    min-width: 800px;
+    min-height: 600px;
+    margin-left: 50px;
+
+}
+
+.col-sm-6{
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
