@@ -1,0 +1,16 @@
+.card-img-top {
+    max-width: 285px;
+    max-height: 214px;
+    min-width: 285px;
+    min-height: 214px;
+}
+
+.row {
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.col-sm-2 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
