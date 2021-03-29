@@ -11,3 +11,5 @@ class Item(SqlAlchemyBase):
     price = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
     image_link = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     about = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    address = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    tags = sqlalchemy.Column(sqlalchemy.String, nullable=True)
