@@ -3,7 +3,8 @@ from data import db_session
 from data.estate_items import Item
 from data.users import User
 from forms.user import RegisterForm, LoginForm
-from flask_login import LoginManager, login_user, login_required, logout_user
+from forms.buildings_edit import BuildingForm
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'flask_secret_key'
@@ -41,7 +42,7 @@ def catalog():
 def building(id):
     db_sess = db_session.create_session()
     building = db_sess.query(Item).get(id)
-    return render_template('building.html', building=building)
+    return render_template('building.html', building=building, title=building.name)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -60,8 +61,9 @@ def reqister():
         user = User(
             name=form.name.data,
             surname=form.surname.data,
-            email=form.email.data
+            email=form.email.data,
         )
+        user.is_admin = False
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
@@ -84,9 +86,37 @@ def login():
     return render_template('login.html', title='Авторизация', form=form)
 
 
+@app.route('/post_edit')
+def post_edit():
+    db_sess = db_session.create_session()
+    estates = db_sess.query(Item).filter(current_user.id == Item.user_id)
+    return render_template('post_edit.html', title='Мои здания', estates=estates)
+
+
+@app.route('/building_info_edit', methods=['GET', 'POST'])
+@login_required
+def add_building():
+    form = BuildingForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        item = Item(
+            name=form.name.data,
+            about=form.about.data,
+            tags=form.tags.data,
+            price=form.price.data,
+            address=form.address.data,
+            image_link=form.image_link.data)
+        current_user.items.append(item)
+        db_sess.merge(current_user)
+        db_sess.commit()
+        return redirect('/catalog')
+    return render_template('building_info_edit.html', title='Добавление здания',
+                           form=form)
+
+
 def main():
     db_session.global_init("db/estate.db")
-    db_sess = db_session.create_session()
+    # db_sess = db_session.create_session()
     # estate = Item()
     # estate.name = "Сарай в центре Москвы"
     # estate.about = "Современная, удобная планировка 97 серии, комната 19 м., кухня-9м., кладовка, санузел раздельный. " \

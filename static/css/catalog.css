@@ -18,13 +18,13 @@
 .btn-outline-dark {
     color: #fff;
     background-color: black;
-    border-color: black; /*set the color you want here*/
+    border-color: black;
 }
 
 .btn-outline-dark:hover, .btn-outline-dark:focus, .btn-outline-dark:active, .btn-outline-dark.active, .open > .dropdown-toggle.btn-outline-dark {
     color: black;
     background-color: white;
-    border-color: black; /*set the color you want here*/
+    border-color: black;
 }
 
 h1, h2 {
@@ -44,4 +44,32 @@ h1, h2 {
 .col-sm-6 {
     margin-top: 20px;
     margin-bottom: 20px;
+}
+
+.btn-outline-secondary{
+    margin-top: 10px;
+    color: white;
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-outline-secondary:hover, .btn-outline-secondary:focus, .btn-outline-secondary:active, .btn-outline-secondary.active, .open > .dropdown-toggle.btn-outline-secondary {
+    margin-top: 10px;
+    color: black;
+    background-color: white;
+    border-color: white;
+}
+
+.btn-success{
+    margin-top: 10px;
+    color: white;
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-success:hover, .btn-success:focus, .btn-success:active, .btn-success.active, .open > .dropdown-toggle.btn-success {
+    margin-top: 10px;
+    color: black;
+    background-color: white;
+    border-color: white;
 }
