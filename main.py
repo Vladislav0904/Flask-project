@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, abort, request
 from data import db_session
 from data.estate_items import Item
 from data.users import User
@@ -112,6 +112,69 @@ def add_building():
         return redirect('/catalog')
     return render_template('building_info_edit.html', title='Добавление здания',
                            form=form)
+
+
+@app.route('/building_info_edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_building(id):
+    form = BuildingForm()
+    if request.method == "GET":
+        db_sess = db_session.create_session()
+        items = db_sess.query(Item).filter(Item.id == id,
+                                           Item.user == current_user
+                                           ).first()
+        print(items)
+        if items:
+            form.name.data = items.name
+            form.about.data = items.about
+            form.tags.data = items.tags
+            form.price.data = items.price
+            form.address.data = items.address
+            form.image_link.data = items.image_link
+            print(items)
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        items = db_sess.query(Item).filter(Item.id == id,
+                                           Item.user == current_user
+                                           ).first()
+        if items:
+            items.name = form.name.data
+            items.about = form.about.data
+            items.tags = form.tags.data
+            items.price = form.price.data
+            items.address = form.address.data
+            items.image_link = form.image_link.data
+            db_sess.commit()
+            return redirect('/post_edit')
+        else:
+            abort(404)
+
+    return render_template('building_info_edit.html',
+                           title='Редактирование информации о здании',
+                           form=form
+                           )
+
+
+@app.route('/building_info_delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def building_delete(id):
+    db_sess = db_session.create_session()
+    items = db_sess.query(Item).filter(Item.id == id,
+                                      Item.user == current_user
+                                      ).first()
+    if items:
+        db_sess.delete(items)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/post_edit') 
+
+
+
+
+
 
 
 def main():
