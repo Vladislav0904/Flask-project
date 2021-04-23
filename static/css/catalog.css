@@ -93,3 +93,14 @@ blockquote {
     min-width: 1920px;
     min-height: 899px;
 }
+
+
+form {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 450px;
+    background-color: #e6e7e7;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 10px;
+}
