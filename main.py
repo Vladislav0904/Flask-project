@@ -1,5 +1,6 @@
 from flask import Flask, render_template, redirect, abort, request, Blueprint, jsonify
 import requests
+import os
 from sqlalchemy import func, and_, or_, not_
 from data import db_session
 from data.estate_items import Item
@@ -339,4 +340,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
