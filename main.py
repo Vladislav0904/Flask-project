@@ -54,7 +54,7 @@ def logout():
 @app.route('/index')
 @app.route('/')
 def index():
-    return render_template('base.html', title='Главная')
+    return render_template('main.html', title='Главная')
 
 
 @app.route('/catalog')
@@ -264,6 +264,53 @@ def profile():
 @app.route('/dev')
 def dev():
     return render_template('dev.html', title='Разработчикам')
+
+
+@app.route('/users', methods=['GET', 'POST'])
+def users():
+    if current_user.is_authenticated:
+        if current_user.is_admin:
+            db_sess = db_session.create_session()
+            query = db_sess.query(User).all()
+            return render_template('users.html', title='Пользователи', users=query)
+        else:
+            return 'Недостаточно прав'
+    else:
+        return redirect('/login')
+
+
+@app.route('/user_no_admin/<int:id>', methods=['GET', 'POST'])
+def user_admin(id):
+    if current_user.is_authenticated:
+        if current_user.is_admin:
+            db_sess = db_session.create_session()
+            query = db_sess.query(User).filter(User.id == id).all()
+            for i in query:
+                i.is_admin = True
+            db_sess.flush()
+            db_sess.commit()
+            return redirect('/users')
+        else:
+            return 'Недостаточно прав'
+    else:
+        return redirect('/login')
+
+
+@app.route('/user_admin/<int:id>', methods=['GET', 'POST'])
+def user_no_admin(id):
+    if current_user.is_authenticated:
+        if current_user.is_admin:
+            db_sess = db_session.create_session()
+            query = db_sess.query(User).filter(User.id == id).all()
+            for i in query:
+                i.is_admin = False
+            db_sess.flush()
+            db_sess.commit()
+            return redirect('/users')
+        else:
+            return 'Недостаточно прав'
+    else:
+        return redirect('/login')
 
 
 @app.route('/signings', methods=['GET', 'POST'])
