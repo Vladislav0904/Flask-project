@@ -1,4 +1,5 @@
 from flask import Flask, render_template, redirect, abort, request
+from sqlalchemy import func, and_, or_, not_
 from data import db_session
 from data.estate_items import Item
 from data.users import User
@@ -194,6 +195,16 @@ def building_delete(id):
     else:
         abort(404)
     return redirect('/post_edit')
+
+
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    db_sess = db_session.create_session()
+    query = db_sess.query(Signing, Item)
+    query = query.join(Item, Item.id == Signing.estate_id)
+    query = query.filter(Signing.user_id == current_user.id).all()
+    return render_template('profile.html', info=query)
 
 
 def main():
