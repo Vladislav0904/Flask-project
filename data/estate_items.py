@@ -18,3 +18,4 @@ class Item(SqlAlchemyBase):
                                 sqlalchemy.ForeignKey("users.id"))
     user = orm.relation('User')
     signings = orm.relation("Signing", back_populates='item')
+    images = orm.relation("Image", back_populates='item')

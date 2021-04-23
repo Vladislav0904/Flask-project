@@ -10,5 +10,5 @@ class BuildingForm(FlaskForm):
     tags = TextAreaField("Краткое описание")
     price = IntegerField("Цена")
     address = StringField('Адрес')
-    image_link = StringField('Ссылка на картинку')
+    image_link = TextAreaField('Ссылка на картинки(через пробел)')
     submit = SubmitField('Применить')

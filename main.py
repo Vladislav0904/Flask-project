@@ -3,6 +3,7 @@ from sqlalchemy import func, and_, or_, not_
 from data import db_session
 from data.estate_items import Item
 from data.users import User
+from data.images import Image
 from data.signings import Signing
 from forms.user import RegisterForm, LoginForm
 from forms.buildings_edit import BuildingForm
@@ -45,7 +46,8 @@ def catalog():
 def building(id):
     db_sess = db_session.create_session()
     building = db_sess.query(Item).get(id)
-    return render_template('building.html', building=building, title=building.name, house_id=id)
+    images = db_sess.query(Image).filter(Image.estate_id == id).all()
+    return render_template('building.html', building=building, title=building.name, house_id=id, images=images)
 
 
 @app.route('/building/sign_for/<int:id>', methods=['GET', 'POST'])
@@ -130,9 +132,16 @@ def add_building():
             tags=form.tags.data,
             price=form.price.data,
             address=form.address.data,
-            image_link=form.image_link.data)
+            image_link=form.image_link.data.split()[0])
         current_user.items.append(item)
         db_sess.merge(current_user)
+        db_sess.commit()
+        for items in form.image_link.data.split():
+            image = Image(
+                estate_id=db_sess.query(Item).filter(Item.name == item.name).first().id,
+                link=items
+            )
+            db_sess.add(image)
         db_sess.commit()
         return redirect('/catalog')
     return render_template('building_info_edit.html', title='Добавление здания',
@@ -143,6 +152,11 @@ def add_building():
 @login_required
 def edit_building(id):
     form = BuildingForm()
+    db_sess = db_session.create_session()
+    arr = []
+    for i in db_sess.query(Image).filter(Image.estate_id == id).all():
+        arr.append(i.link)
+    images_h = ' '.join(arr)
     if request.method == "GET":
         db_sess = db_session.create_session()
         items = db_sess.query(Item).filter(Item.id == id,
@@ -155,7 +169,7 @@ def edit_building(id):
             form.tags.data = items.tags
             form.price.data = items.price
             form.address.data = items.address
-            form.image_link.data = items.image_link
+            form.image_link.data = images_h
             print(items)
         else:
             abort(404)
@@ -170,7 +184,14 @@ def edit_building(id):
             items.tags = form.tags.data
             items.price = form.price.data
             items.address = form.address.data
-            items.image_link = form.image_link.data
+            items.image_link = form.image_link.data.split()[0]
+            for item in form.image_link.data.split():
+                if item not in images_h:
+                    image = Image(
+                        estate_id=id,
+                        link=item
+                    )
+                    db_sess.add(image)
             db_sess.commit()
             return redirect('/post_edit')
         else:
