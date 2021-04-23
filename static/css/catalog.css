@@ -86,3 +86,10 @@ blockquote {
     background-color: #e1e4d7;
     color: #000000;
 }
+
+#main {
+    max-width: 1920px;
+    max-height: 899px;
+    min-width: 1920px;
+    min-height: 899px;
+}

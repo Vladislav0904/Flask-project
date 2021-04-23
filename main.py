@@ -159,10 +159,14 @@ def add_building():
     form = BuildingForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
+        if len(form.tags.data) >= 29 * 3:
+            line_tags = form.tags.data[:29 * 3 - 3] + '...'
+        else:
+            line_tags = form.tags.data + ' ' * (29 * 3 - len(form.tags.data))
         item = Item(
             name=form.name.data,
             about=form.about.data,
-            tags=form.tags.data,
+            tags=line_tags,
             price=form.price.data,
             address=form.address.data,
             image_link=form.image_link.data.split()[0])
@@ -211,10 +215,15 @@ def edit_building(id):
         items = db_sess.query(Item).filter(Item.id == id,
                                            Item.user == current_user
                                            ).first()
+        print(len(form.tags.data))
+        if len(form.tags.data) >= 29 * 3:
+            line_tags = form.tags.data[:29 * 3 - 3] + '...'
+        else:
+            line_tags = form.tags.data + ' ' * (29 * 3 - len(form.tags.data))
         if items:
             items.name = form.name.data
             items.about = form.about.data
-            items.tags = form.tags.data
+            items.tags = line_tags
             items.price = form.price.data
             items.address = form.address.data
             items.image_link = form.image_link.data.split()[0]
