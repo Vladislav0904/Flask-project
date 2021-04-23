@@ -1,4 +1,5 @@
-from flask import Flask, render_template, redirect, abort, request
+from flask import Flask, render_template, redirect, abort, request, Blueprint, jsonify
+import requests
 from sqlalchemy import func, and_, or_, not_
 from data import db_session
 from data.estate_items import Item
@@ -14,6 +15,27 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'flask_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+blueprint = Blueprint(
+    'estate_api',
+    __name__,
+    template_folder='templates'
+)
+
+
+@blueprint.route('/api/estate')
+def get_estate():
+    db_sess = db_session.create_session()
+    estates = db_sess.query(Item).all()
+    for item in estates:
+        print(item)
+    return jsonify(
+        {
+            'news':
+                [item.to_dict(only=('name', 'about', 'address', 'price', 'image_ling', 'tags'))
+                 for item in estates]
+        }
+    )
 
 
 @login_manager.user_loader
@@ -239,6 +261,11 @@ def profile():
     return render_template('profile.html', info=query)
 
 
+@app.route('/dev')
+def dev():
+    return render_template('dev.html', title='Разработчикам')
+
+
 @app.route('/signings', methods=['GET', 'POST'])
 @login_required
 def signings():
@@ -251,6 +278,7 @@ def signings():
 def main():
     db_session.global_init("db/estate.db")
     # db_sess = db_session.create_session()
+    app.register_blueprint(blueprint)
     app.run()
 
 

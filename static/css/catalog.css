@@ -46,7 +46,7 @@ h1, h2 {
     margin-bottom: 20px;
 }
 
-.btn-outline-secondary{
+.btn-outline-secondary {
     margin-top: 10px;
     color: white;
     background-color: #6c757d;
@@ -60,7 +60,7 @@ h1, h2 {
     border-color: white;
 }
 
-.btn-success{
+.btn-success {
     margin-top: 10px;
     color: white;
     background-color: #6c757d;
@@ -72,4 +72,17 @@ h1, h2 {
     color: black;
     background-color: white;
     border-color: white;
+}
+
+blockquote {
+    padding-top: 10px;
+    padding-right: 0px;
+    margin-right: 1000px;
+    border-left: 2px solid #000000;
+    border-right: 2px #000000;
+    border-top: 2px solid #000000;
+    border-bottom: 2px solid #000000;
+    border-radius: 10px;
+    background-color: #e1e4d7;
+    color: #000000;
 }
