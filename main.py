@@ -33,7 +33,7 @@ def get_estate():
     return jsonify(
         {
             'news':
-                [item.to_dict(only=('name', 'about', 'address', 'price', 'image_ling', 'tags'))
+                [item.to_dict(only=('name', 'about', 'address', 'price', 'image_link', 'tags'))
                  for item in estates]
         }
     )
