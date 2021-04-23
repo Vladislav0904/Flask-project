@@ -44,10 +44,19 @@ def catalog():
 
 @app.route('/building/<int:id>')
 def building(id):
-    db_sess = db_session.create_session()
-    building = db_sess.query(Item).get(id)
-    images = db_sess.query(Image).filter(Image.estate_id == id).all()
-    return render_template('building.html', building=building, title=building.name, house_id=id, images=images)
+    if current_user.is_authenticated:
+        db_sess = db_session.create_session()
+        building = db_sess.query(Item).get(id)
+        enabled = db_sess.query(Signing).filter(Signing.user_id == current_user.id, Signing.estate_id == id).all()
+        if len(enabled) > 0:
+            enabled = True
+        else:
+            enabled = False
+        images = db_sess.query(Image).filter(Image.estate_id == id).all()
+        return render_template('building.html', building=building, title=building.name, house_id=id, images=images,
+                               enabled=enabled)
+    else:
+        return redirect('/login')
 
 
 @app.route('/building/sign_for/<int:id>', methods=['GET', 'POST'])
@@ -56,6 +65,8 @@ def sign_for(id):
     db_sess = db_session.create_session()
     building = db_sess.query(Item).get(id)
     form = SignForm()
+    form.name.data = current_user.name
+    form.surname.data = current_user.surname
     if form.validate_on_submit():
         signing = Signing(
             name=form.name.data,
@@ -226,6 +237,15 @@ def profile():
     query = query.join(Item, Item.id == Signing.estate_id)
     query = query.filter(Signing.user_id == current_user.id).all()
     return render_template('profile.html', info=query)
+
+
+@app.route('/signings', methods=['GET', 'POST'])
+@login_required
+def signings():
+    db_sess = db_session.create_session()
+    query = db_sess.query(Signing, Item)
+    query = query.join(Item, Item.id == Signing.estate_id).all()
+    return render_template('signings.html', info=query)
 
 
 def main():

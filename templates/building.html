@@ -64,7 +64,13 @@
                 <h3 class="card-title">От {{building.price}} руб.</h3>
                 <h4 class="card-title">{{building.address}}</h4>
                 <p class="card-text">{{building.about}}</p>
-                <a href="sign_for/{{ building.id }}" type="button" class="btn btn-outline-dark">Записаться</a>
+                {% if enabled %}
+                <button href="sign_for/{{ building.id }}" type="button" class="btn btn-outline-dark" disabled>Вы уже
+                    записались на осмотр
+                </button>
+                {% else %}
+                <button href="sign_for/{{ building.id }}" type="button" class="btn btn-outline-dark">Записаться</button>
+                {% endif %}
             </div>
         </div>
     </div>
