@@ -2,8 +2,10 @@ from flask import Flask, render_template, redirect, abort, request
 from data import db_session
 from data.estate_items import Item
 from data.users import User
+from data.signings import Signing
 from forms.user import RegisterForm, LoginForm
 from forms.buildings_edit import BuildingForm
+from forms.sign_for_show import SignForm
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 app = Flask(__name__)
@@ -42,7 +44,29 @@ def catalog():
 def building(id):
     db_sess = db_session.create_session()
     building = db_sess.query(Item).get(id)
-    return render_template('building.html', building=building, title=building.name)
+    return render_template('building.html', building=building, title=building.name, house_id=id)
+
+
+@app.route('/building/sign_for/<int:id>', methods=['GET', 'POST'])
+@login_required
+def sign_for(id):
+    db_sess = db_session.create_session()
+    building = db_sess.query(Item).get(id)
+    form = SignForm()
+    if form.validate_on_submit():
+        signing = Signing(
+            name=form.name.data,
+            surname=form.surname.data,
+            patronymic=form.patronymic.data,
+            phone=form.phone.data,
+            date=form.date.data,
+            user_id=current_user.id,
+            estate_id=id
+        )
+        db_sess.add(signing)
+        db_sess.commit()
+        return redirect('/index')
+    return render_template('sign_for.html', form=form, title='Запись на осмотр')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -162,37 +186,19 @@ def edit_building(id):
 def building_delete(id):
     db_sess = db_session.create_session()
     items = db_sess.query(Item).filter(Item.id == id,
-                                      Item.user == current_user
-                                      ).first()
+                                       Item.user == current_user
+                                       ).first()
     if items:
         db_sess.delete(items)
         db_sess.commit()
     else:
         abort(404)
-    return redirect('/post_edit') 
-
-
-
-
-
+    return redirect('/post_edit')
 
 
 def main():
     db_session.global_init("db/estate.db")
     # db_sess = db_session.create_session()
-    # estate = Item()
-    # estate.name = "Сарай в центре Москвы"
-    # estate.about = "Современная, удобная планировка 97 серии, комната 19 м., кухня-9м., кладовка, санузел раздельный. " \
-    #                "Дом новый, сдача апрель-май. мкрн Парковый, новый микрорайон №45. Отделка полная строительная: " \
-    #                "обои, линолеум, вся сантехника, натяжные потолки, межкомнатные двери ламинированные, " \
-    #                "лоджия застеклена, современная детская и спортивная площадка, рядом лес. остановка, " \
-    #                "магазины рядом. "
-    # estate.image_link = 'https://i.ibb.co/hYGdRB3/saray.jpg'
-    # estate.address = 'ул. Охотный Ряд, 2, Москва'
-    # estate.tags = 'Площадь 36 м2, большой туалет, 1 спальня. Вторичная мебель.'
-    # estate.price = 167000
-    # db_sess.add(estate)
-    # db_sess.commit()
     app.run()
 
 

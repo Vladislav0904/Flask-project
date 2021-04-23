@@ -17,3 +17,4 @@ class Item(SqlAlchemyBase):
     user_id = sqlalchemy.Column(sqlalchemy.Integer,
                                 sqlalchemy.ForeignKey("users.id"))
     user = orm.relation('User')
+    signings = orm.relation("Signing", back_populates='item')
