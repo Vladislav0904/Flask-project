@@ -3,7 +3,7 @@
 {% block content %}
 {% if current_user.is_authenticated and current_user.is_admin %}
 <h1>Мои здания</h1>
-<a href="building_info_edit" class="btn btn-outline-dark">Добавить здание</a>
+<a style="margin-left: 50px" href="building_info_edit" class="btn btn-outline-dark">Добавить здание</a>
 <div class="row">
     {% for item in estates%}
     <div class="col-sm-2">
